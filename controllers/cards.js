@@ -14,10 +14,7 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
-  Card.create({ name, link, owner }, {
-    new: true,
-    runValidators: true,
-  })
+  Card.create({ name, link, owner })
     .then((data) => {
       res.status(201).send(data);
     })
@@ -34,7 +31,7 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => new Error({ message: 'Карточка не найдена' }))
     .then((data) => {
-      res.status(201).send(data);
+      res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
