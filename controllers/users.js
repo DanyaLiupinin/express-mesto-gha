@@ -18,8 +18,6 @@ const getUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Пользователь не найден' });
-      } else if (err.statusCode === 404) {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -52,11 +50,11 @@ const updateUser = (req, res) => {
   })
     .orFail(() => new Error({ message: 'Пользователь не найден' }))
     .then((data) => {
-      res.status(201).send(data);
+      res.status(200).send(data);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Пользователь не найден' });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Некорректные данные' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
@@ -74,10 +72,10 @@ const updateAvatar = (req, res) => {
   })
     .orFail(() => new Error({ message: 'Пользователь не найден' }))
     .then((data) => {
-      res.status(201).send(data);
+      res.status(200).send(data);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Пользователь не найден' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: 'Пользователь не найден' });
