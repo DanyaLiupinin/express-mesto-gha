@@ -14,7 +14,10 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
-  Card.create({ name, link, owner })
+  Card.create({ name, link, owner }, {
+    new: true,
+    runValidators: true,
+  })
     .then((data) => {
       res.status(201).send(data);
     })

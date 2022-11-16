@@ -29,7 +29,7 @@ const getUser = (req, res) => {
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  User.create({ name, about, avatar }, { runValidators: true })
     .then((data) => {
       res.status(201).send(data);
     })
@@ -46,7 +46,10 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
-  User.findByIdAndUpdate({ _id: userId }, { name, about })
+  User.findByIdAndUpdate({ _id: userId }, { name, about }, {
+    new: true,
+    runValidators: true,
+  })
     .orFail(() => new Error({ message: 'Пользователь не найден' }))
     .then((data) => {
       res.status(201).send(data);
@@ -65,7 +68,10 @@ const updateUser = (req, res) => {
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const userId = req.user._id;
-  User.findByIdAndUpdate({ _id: userId }, { avatar })
+  User.findByIdAndUpdate({ _id: userId }, { avatar }, {
+    new: true,
+    runValidators: true,
+  })
     .orFail(() => new Error({ message: 'Пользователь не найден' }))
     .then((data) => {
       res.status(201).send(data);
