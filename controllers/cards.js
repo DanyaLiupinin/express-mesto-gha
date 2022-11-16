@@ -35,7 +35,7 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send('Неверный id карточки');
+        res.status(400).send('Карточка не найдена');
       } else if (err.statusCode === 404) {
         res.status(404).send('Карточка не найдена');
       } else {
@@ -53,7 +53,7 @@ const putLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send('Неверный id карточки');
+        res.status(400).send('Карточка не найдена');
       } else if (err.statusCode === 404) {
         res.status(404).send('Карточка не найдена');
       } else {
@@ -71,7 +71,7 @@ const deleteLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send('Неверный id карточки');
+        res.status(400).send('Карточка не найдена');
       } else if (err.statusCode === 404) {
         res.status(404).send('Карточка не найдена');
       } else {
