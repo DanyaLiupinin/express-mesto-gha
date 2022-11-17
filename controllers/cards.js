@@ -35,7 +35,7 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.status(400).send({ message: 'Карточка не найдена' });
       } else if (err.message === 'Карточка не найдена') {
         res.status(404).send({ message: 'Карточка не найдена' });
       } else {
