@@ -29,18 +29,14 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .orFail(() => {
-      const error = new Error('Карточка не найдена');
-      error.statusCode = 404;
-      throw error;
-    })
+    .orFail(() => new Error('Карточка не найдена'))
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(404).send({ message: 'Карточка не найдена' });
-      } else if (err.statusCode === 404) {
+      } else if (err.message === 'Карточка не найдена') {
         res.status(404).send({ message: 'Карточка не найдена' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -51,18 +47,14 @@ const deleteCard = (req, res) => {
 const putLike = (req, res) => {
   const userId = req.user._id;
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: userId } }, { new: true })
-    .orFail(() => {
-      const error = new Error('Карточка не найдена');
-      error.statusCode = 404;
-      throw error;
-    })
+    .orFail(() => new Error('Карточка не найдена'))
     .then((data) => {
       res.status(201).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточка не найдена' });
-      } else if (err.statusCode === 404) {
+      } else if (err.message === 'Карточка не найдена') {
         res.status(404).send({ message: 'Карточка не найдена' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -73,18 +65,14 @@ const putLike = (req, res) => {
 const deleteLike = (req, res) => {
   const userId = req.user._id;
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: userId } }, { new: true })
-    .orFail(() => {
-      const error = new Error('Карточка не найдена');
-      error.statusCode = 404;
-      throw error;
-    })
+    .orFail(() => new Error('Карточка не найдена'))
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточка не найдена' });
-      } else if (err.statusCode === 404) {
+      } else if (err.message === 'Карточка не найдена') {
         res.status(404).send({ message: 'Карточка не найдена' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });

@@ -12,12 +12,14 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(() => new Error({ message: 'Пользователь не найден' }))
+    .orFail(() => new Error('Пользователь не найден'))
     .then((user) => {
       res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Пользователь не найден' });
+      } else if (err.message === 'Пользователь не найден') {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -48,14 +50,14 @@ const updateUser = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .orFail(() => new Error({ message: 'Пользователь не найден' }))
+    .orFail(() => new Error('Пользователь не найден'))
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Некорректные данные' });
-      } else if (err.statusCode === 404) {
+      } else if (err.message === 'Пользователь не найден') {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -70,14 +72,14 @@ const updateAvatar = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .orFail(() => new Error({ message: 'Пользователь не найден' }))
+    .orFail(() => new Error('Пользователь не найден'))
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Пользователь не найден' });
-      } else if (err.statusCode === 404) {
+      } else if (err.message === 'Пользователь не найден') {
         res.status(404).send({ message: 'Пользователь не найден' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
