@@ -19,5 +19,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.all('*', (req, res) => {
+  res.status(404).send({ message: 'Неверный адрес' });
+});
 app.use(userRouter);
 app.use(cardRouter);
