@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.all('*', (req, res) => {
+app.all('/*', (req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
 });
 app.use(userRouter);
