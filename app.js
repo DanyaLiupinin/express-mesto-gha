@@ -19,8 +19,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.all('/*', (req, res) => {
+app.use('/users', userRouter);
+app.use('/cards', cardRouter);
+
+app.all('*', (req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
 });
-app.use(userRouter);
-app.use(cardRouter);
