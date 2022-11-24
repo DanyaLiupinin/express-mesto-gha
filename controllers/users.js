@@ -123,6 +123,18 @@ const login = (req, res) => {
     });
 };
 
+const getCurrentUser = (req, res, next) => { // next ???
+  const { _id } = req.user;
+  User.findById(_id)
+    .then((user) => {
+      if (!user) {
+        return next(new Error('Пользователь не найден'));
+      }
+      return res.status(200).send({ data: user });
+    })
+    .catch(next); // next ?? так?
+};
+
 module.exports = {
   getUsers,
   getUser,
@@ -130,4 +142,5 @@ module.exports = {
   updateUser,
   updateAvatar,
   login,
+  getCurrentUser,
 };

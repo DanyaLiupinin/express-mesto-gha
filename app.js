@@ -16,17 +16,17 @@ app.use(bodyParser.json());
 /*
 app.use((req, res, next) => {
   req.user = {
-    _id: '63734d86e6ccdfd6bad397df',
+    _id: '637e3386c66882cbad9d3a16',
   };
 
   next();
 });
 */
 
-app.use('/users', userRouter);
-app.use('/cards', cardRouter);
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardRouter);
 
-app.post('/signin', auth, login);
+app.post('/signin', login);
 app.post('/signup', createUser);
 
 app.all('*', (req, res) => {
