@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const getUsers = (req, res) => {
@@ -106,9 +107,14 @@ const updateAvatar = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
-  User.findUserByCredentials(email, password)
-    .then(() => {
-      res.send({ message: 'Всё верно!' });
+  User.findUserByCredentials(email, password) // отсюда приходят данные авторизированного юзера
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'very-secret-key', { expiresIn: '7d' }); // код шифрования поменять // создаем jwt
+      res.cookie('jwt', token, { // записываем в куку // ToDO поменять жизнь jwt 7 дней
+        maxAge: 3600000, // разобраться сколько должна жить кука
+        httpOnly: true,
+      });
+      res.send({ token }); // отсылаем jwt пользователю
     })
     .catch((err) => {
       res
