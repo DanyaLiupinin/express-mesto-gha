@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 const bodyParser = require('body-parser');
+const { celebrate, Joi } = require('celebrate');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
@@ -17,11 +18,21 @@ app.use(bodyParser.json());
 app.use('/users', auth, userRouter);
 app.use('/cards', auth, cardRouter);
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required.email(),
+    password: Joi.string().required,
+  }),
+}), login);
 
-app.all('*', (req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
-});
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(/https?:\/\/(www\.)?\d?\D{1,}#?/),
+    email: Joi.string().min(3).required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
 
 app.use(errorHandler);
