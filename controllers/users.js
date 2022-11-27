@@ -47,8 +47,14 @@ const createUser = (req, res, next) => {
         email,
         password: hash,
       })
-        .then((data) => {
-          res.status(201).send(data);
+        .then((user) => {
+          res.status(201).send({
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+            _id: user._id,
+          });
         })
         .catch((err) => {
           if (err.name === 'ValidationError') {
@@ -109,7 +115,11 @@ const updateAvatar = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findUserByCredentials(email, password) // отсюда приходят данные авторизированного юзера
+  if (!email || !password) {
+    const error = new BadRequestError('не заполнены email или пароль');
+    next(error);
+  }
+  User.findUserByCredentials(email, password) // отсюда приходят данные авториз юзер
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'very-secret-key', { expiresIn: '7d' }); // код шифрования поменять // создаем jwt
       res.cookie('jwt', token, { // записываем в куку // ToDO поменять жизнь jwt 7 дней
