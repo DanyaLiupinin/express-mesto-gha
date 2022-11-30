@@ -18,10 +18,8 @@ cardRouter.post('/', celebrate({
 }), createCard);
 
 cardRouter.delete('/:cardId', celebrate({
-  body: Joi.object().keys({
-    params: Joi.object().keys({
-      cardId: Joi.string().hex().length(24).required(),
-    }),
+  params: Joi.object().keys({
+    cardId: Joi.string().hex().length(24),
   }),
 }), deleteCard);
 
