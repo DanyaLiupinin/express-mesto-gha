@@ -55,8 +55,7 @@ const deleteCard = (req, res, next) => {
 };
 
 const putLike = (req, res, next) => {
-  const userId = req.user._id;
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: userId } }, { new: true })
+  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .orFail(() => {
       throw new NotFoundError('Карточка не найдена');
     })
