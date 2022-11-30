@@ -32,18 +32,18 @@ const deleteCard = (req, res, next) => {
   const userId = req.user._id;
 
   Card.findById(req.params.cardId)
-    .orFail(() => {
-      throw new NotFoundError('Карточка не найдена');
-    })
     .then((data) => {
+      if (!data) {
+        throw new NotFoundError('Карточка не найдена');
+      }
       if (!data.owner.equals(userId)) {
         throw new ForbiddenError('Нельзя удалить чужую карточку');
-      } else {
-        Card.findByIdAndRemove(req.params.cardId)
-          .then((card) => {
-            res.status(200).send({ card });
-          });
       }
+      Card.findByIdAndRemove(req.params.cardId)
+        .then((card) => {
+          res.status(200).send({ card });
+        })
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
