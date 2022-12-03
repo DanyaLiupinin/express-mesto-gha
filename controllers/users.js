@@ -85,10 +85,14 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
-      } else {
-        next(err);
       }
-    });
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Пользователь не найден'));
+      }
+
+      next(err);
+    })
+    .catch(next);
 };
 
 const updateAvatar = (req, res, next) => {
@@ -107,10 +111,14 @@ const updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
-      } else {
-        next(err);
       }
-    });
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Пользователь не найден'));
+      }
+
+      next(err);
+    })
+    .catch(next);
 };
 
 const login = (req, res, next) => {
