@@ -118,10 +118,6 @@ const login = (req, res, next) => {
   User.findUserByCredentials(email, password) // отсюда приходят данные авториз юзер
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'very-secret-key', { expiresIn: '7d' }); // код шифрования поменять // создаем jwt
-      res.cookie('jwt', token, { // записываем в куку // ToDO поменять жизнь jwt 7 дней
-        maxAge: 3600000, // разобраться сколько должна жить кука
-        httpOnly: true,
-      });
       res.send({ token }); // отсылаем jwt пользователю
     })
     .catch(next);
@@ -130,6 +126,9 @@ const login = (req, res, next) => {
 const getCurrentUser = (req, res, next) => {
   const { _id } = req.user;
   User.findById(_id)
+    .orFail(() => {
+      throw new NotFoundError('Пользователь не найден');
+    })
     .then((user) => {
       if (!user) {
         return next(new Error('Пользователь не найден'));
