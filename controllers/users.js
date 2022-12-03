@@ -115,10 +115,6 @@ const updateAvatar = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    const error = new BadRequestError('не заполнены email или пароль');
-    next(error);
-  }
   User.findUserByCredentials(email, password) // отсюда приходят данные авториз юзер
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'very-secret-key', { expiresIn: '7d' }); // код шифрования поменять // создаем jwt
