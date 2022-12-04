@@ -4,11 +4,12 @@ const User = require('../models/user');
 const ConflictError = require('../errors/ConflictError');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
+const status = require('../utils/status');
 
 const getUsers = (req, res, next) => {
   User.find({})
     .then((data) => {
-      res.status(200).send(data);
+      res.status(status.OK).send(data);
     })
     .catch(next);
 };
@@ -23,7 +24,7 @@ const getUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Пользователь не найден'));
+        next(new BadRequestError('Некорректные данные'));
       } else {
         next(err);
       }
@@ -48,7 +49,7 @@ const createUser = (req, res, next) => {
         password: hash,
       })
         .then((user) => {
-          res.status(201).send({
+          res.status(status.CREATED).send({
             name: user.name,
             about: user.about,
             avatar: user.avatar,
@@ -80,14 +81,14 @@ const updateUser = (req, res, next) => {
       throw new NotFoundError('Пользователь не найден');
     })
     .then((data) => {
-      res.status(200).send(data);
+      res.status(status.OK).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
       }
       if (err.name === 'CastError') {
-        next(new BadRequestError('Пользователь не найден'));
+        next(new BadRequestError('Некорректные данные'));
       }
 
       next(err);
@@ -106,14 +107,14 @@ const updateAvatar = (req, res, next) => {
       throw new NotFoundError('Пользователь не найден');
     })
     .then((data) => {
-      res.status(200).send(data);
+      res.status(status.OK).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
       }
       if (err.name === 'CastError') {
-        next(new BadRequestError('Пользователь не найден'));
+        next(new BadRequestError('Некорректные данные'));
       }
 
       next(err);
@@ -141,7 +142,14 @@ const getCurrentUser = (req, res, next) => {
       if (!user) {
         return next(new Error('Пользователь не найден'));
       }
-      return res.status(200).send({ data: user });
+      return res.status(status.OK).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Некорректные данные'));
+      }
+
+      next(err);
     })
     .catch(next);
 };
