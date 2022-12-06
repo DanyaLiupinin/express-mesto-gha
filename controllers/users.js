@@ -25,9 +25,9 @@ const getUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Некорректные данные'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 
@@ -60,11 +60,13 @@ const createUser = (req, res, next) => {
         .catch((err) => {
           if (err.name === 'ValidationError') {
             next(new BadRequestError('Некорректные данные'));
-          } else if (err.code === 11000) {
-            next(new ConflictError('Email уже используется'));
-          } else {
-            next(err);
+            return;
           }
+          if (err.code === 11000) {
+            next(new ConflictError('Email уже используется'));
+            return;
+          }
+          next(err);
         });
     });
 };
@@ -86,14 +88,14 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
+        return;
       }
       if (err.name === 'CastError') {
         next(new BadRequestError('Некорректные данные'));
+        return;
       }
-
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 const updateAvatar = (req, res, next) => {
@@ -112,14 +114,15 @@ const updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
+        return;
       }
       if (err.name === 'CastError') {
         next(new BadRequestError('Некорректные данные'));
+        return;
       }
 
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 const login = (req, res, next) => {
@@ -147,11 +150,10 @@ const getCurrentUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Некорректные данные'));
+        return;
       }
-
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 module.exports = {
