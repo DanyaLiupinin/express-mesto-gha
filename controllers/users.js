@@ -6,6 +6,8 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const status = require('../utils/status');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const getUsers = (req, res, next) => {
   User.find({})
     .then((data) => {
@@ -129,7 +131,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password) // отсюда приходят данные авториз юзер
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'very-secret-key', { expiresIn: '7d' }); // код шифрования поменять // создаем jwt
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' }); // код шифрования поменять // создаем jwt
       res.send({ token }); // отсылаем jwt пользователю
     })
     .catch(next);
